@@ -1,0 +1,24 @@
+version = 0.1
+[dev]
+[dev.deploy]
+[dev.deploy.parameters]
+s3_bucket = "aws-sam-cli-titanic"
+s3_prefix = "titanic-prediction-dev"
+region = "eu-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+stack_name = "titanic-prediction-dev"
+image_repositories = ["TitanicSurvivorEngine=092583465186.dkr.ecr.eu-central-1.amazonaws.com/titanicpredictiondev421cbe24/titanicsurvivorengine60a3beferepo"]
+StagingEnv = "dev"
+
+[prod]
+[prod.deploy]
+[prod.deploy.parameters]
+s3_bucket = "aws-sam-cli-managed-default-samclisourcebucket-wd2xoprgtnee"
+s3_prefix = "titanic-prediction-prod"
+region = "ca-central-1"
+confirm_changeset = true
+capabilities = "CAPABILITY_IAM"
+stack_name = "titanic-prediction-prod"
+image_repositories = ["DockerEngine=092583465186.dkr.ecr.ca-central-1.amazonaws.com/titanicpredictionprod/prod"]
+StagingEnv = "prod"

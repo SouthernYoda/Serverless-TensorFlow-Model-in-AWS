@@ -1,0 +1,49 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  Titantic Survivor Prediction
+
+Parameters:
+    StagingEnv:
+        Type: String
+        Default: dev
+        AllowedValues:
+            - dev
+            - preprod
+            - prod
+        Description: This is used to differentiate the different staging enviroments. StagingEnv= dev, prod
+
+
+Globals:
+  Function:
+    Timeout: 300
+    Environment:
+       Variables:
+          StagingEnv: !Ref StagingEnv
+
+Resources:
+  TitanicSurvivorEngine:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      FunctionName: !Sub "${AWS::StackName}-model-engine"
+      PackageType: Image
+      Architectures:
+        - x86_64
+      MemorySize: 1000
+      Policies:
+        - AWSLambdaExecute
+        - Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Action:
+                - s3:GetObject
+              Resource:
+                - arn:aws:s3:::titanic-models
+    Environment:
+      Variables:
+        ModelBucket: titanic-models
+        ModelName: titanic_model-Mar30.zip
+    Metadata:
+      Dockerfile: Dockerfile
+      DockerContext: ./model_prediction
+      DockerTag: v1
